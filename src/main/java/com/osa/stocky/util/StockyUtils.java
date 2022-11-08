@@ -17,6 +17,9 @@ public final class StockyUtils {
     
     public static final Long MONTH_MILLIS = 2629800000L;
     
+    private StockyUtils() {
+    }
+    
     /**
      * Extract API key from Authorization.
      * @param authorizationHeader

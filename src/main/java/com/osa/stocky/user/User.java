@@ -51,9 +51,6 @@ public class User implements Serializable {
     
     @Column(name = "updated_plan", nullable = false, columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
     private Timestamp updatedPlan;
-    
-    public User() {
-    }
 
     public int getId() {
         return id;

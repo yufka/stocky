@@ -36,6 +36,8 @@ import org.springframework.stereotype.Component;
 @Order(3)
 public class QuotaFilter implements Filter {
 
+    private static final String NO_TICKER_PROVIDED_STRING = "No stock ticker provided";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(QuotaFilter.class);
 
     @Autowired
@@ -55,47 +57,61 @@ public class QuotaFilter implements Filter {
             final String authorizationHeaderValue = request.getHeader(HttpHeaders.AUTHORIZATION);
             final String valueBase64 = StockyUtils.getApiKey(authorizationHeaderValue);
             User user = userManagementService.get(valueBase64);
-
             SubscriptionPlan rateLimit = subscriptionManager.get(user.getSubscriptionId());
-
-            CachedBodyHttpRequest cachedBodyHttpServletRequest = new CachedBodyHttpRequest(request);
             // extract ticker information
-            if ("/stock".equals(request.getRequestURI().substring(request.getContextPath().length()))) {
-                byte[] bodyBytes = cachedBodyHttpServletRequest.getInputStream().readAllBytes();
-                if (bodyBytes == null) {
-                    response.sendError(HttpStatus.BAD_REQUEST.value(), "No stock ticker provided");
-                    return;
+            CachedBodyHttpRequest cachedBodyHttpServletRequest = new CachedBodyHttpRequest(request);
+            final String resourceRelativePath = request.getRequestURI().substring(request.getContextPath().length());
+            
+            // quota is checked only for stock resource
+            if (!"/stock".equals(resourceRelativePath)) {
+                chain.doFilter(cachedBodyHttpServletRequest, servletResponse);
+                return;
+            }
+
+            Ticker ticker = getTicker(cachedBodyHttpServletRequest.getInputStream().readAllBytes());
+            if (ticker == null) {
+                response.sendError(HttpStatus.BAD_REQUEST.value(), NO_TICKER_PROVIDED_STRING);
+                return;
+            }
+            QuotaConsumptionResult result = stockTickerQuotaService.resolve(valueBase64, ticker.getName(), rateLimit);
+            if (result.isConsumed()) {
+                if (result.getRemaining() != Integer.MAX_VALUE) {
+                    response.addHeader("X-Quota-Limit-Remaining", String.valueOf(result.getRemaining()));
                 }
-                String body = new String(bodyBytes);
-                if (body.isEmpty()) {
-                    response.sendError(HttpStatus.BAD_REQUEST.value(), "No stock ticker provided");
-                    return;
-                }
-                Ticker ticker = getTicker(body);
-                if (ticker == null) {
-                    response.sendError(HttpStatus.BAD_REQUEST.value(), "No stock ticker provided");
-                    return;
-                }
-                if (ticker.getName() == null || ticker.getName().isEmpty() || ticker.getFrame() == null
-                        || ticker.getFrame().getTime() < System.currentTimeMillis()) {
-                    response.sendError(HttpStatus.BAD_REQUEST.value(), "No stock ticker provided");
-                    return;
-                }
-                QuotaConsumptionResult result = stockTickerQuotaService.resolve(valueBase64, ticker.getName(), rateLimit);
-                if (result.isConsumed()) {
-                    if (result.getRemaining() != Integer.MAX_VALUE) {
-                        response.addHeader("X-Quota-Limit-Remaining", String.valueOf(result.getRemaining()));
-                    }
-                } else {
-                    response.sendError(HttpStatus.TOO_MANY_REQUESTS.value(), "You have exhausted your API Request Quota");
-                    return;
-                }
+            } else {
+                response.sendError(HttpStatus.TOO_MANY_REQUESTS.value(), "You have exhausted your API Request Quota");
+                return;
             }
             chain.doFilter(cachedBodyHttpServletRequest, servletResponse);
         } catch (Throwable th) {
             LOGGER.error("Error occured during Quta filtering", th);
             response.sendError(HttpStatus.UNAUTHORIZED.value());
         }
+    }
+    
+    /**
+     * Extract ticker information form request body.
+     * 
+     * @param requestBodyBytes
+     * @return 
+     */
+    private Ticker getTicker(byte[] requestBodyBytes) {
+        if (requestBodyBytes == null) {
+            return null;
+        }
+        String requestBodyString = new String(requestBodyBytes);
+        if (requestBodyString.isEmpty()) {
+            return null;
+        }
+        Ticker ticker = getTicker(requestBodyString);
+        if (ticker == null) {
+            return null;
+        }
+        if (ticker.getName() == null || ticker.getName().isEmpty() || ticker.getFrame() == null
+                || ticker.getFrame().getTime() < System.currentTimeMillis()) {
+            return null;
+        }
+        return ticker;
     }
 
     private Ticker getTicker(String body) {

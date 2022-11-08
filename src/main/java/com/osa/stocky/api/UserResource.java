@@ -65,7 +65,7 @@ public class UserResource {
 
             SubscriptionPlan subscriptionPlan = subscriptionManager.get(userDto.getSubscriptionPlan());
             if (subscriptionPlan == null) {
-                LOGGER.error("Unrecognized user subscription plan: " + userDto.getSubscriptionPlan());
+                logUnrecognizedPlan(userDto.getSubscriptionPlan());
                 return ResponseEntity.badRequest().build();
             }
             user.setSubscriptionId(subscriptionPlan.getId());
@@ -97,12 +97,12 @@ public class UserResource {
             @RequestBody String userPlan) {
         try {
             if (userPlan == null || userPlan.isEmpty()) {
-                LOGGER.error("Unrecognized user subscription plan: " + userPlan);
+                logUnrecognizedPlan(userPlan);
                 return ResponseEntity.badRequest().build();
             }
             SubscriptionPlan newSubscriptionPlan = subscriptionManager.get(userPlan);
             if (newSubscriptionPlan == null) {
-                LOGGER.error("Unrecognized user subscription plan: " + userPlan);
+                logUnrecognizedPlan(userPlan);
                 return ResponseEntity.badRequest().build();
             }
 
@@ -127,5 +127,11 @@ public class UserResource {
             LOGGER.error("Failed to update user subscription plan", e);
             return ResponseEntity.internalServerError().build();
         }
+    }
+    
+    private static final String UNRECOGNIZED_MESSAGE = "Unrecognized user subscription plan: ";
+    
+    private void logUnrecognizedPlan(String planName) {
+        LOGGER.error(UNRECOGNIZED_MESSAGE + planName);
     }
 }
