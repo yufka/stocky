@@ -20,7 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -47,7 +47,7 @@ public class StockTickerResourceTest {
         Ticker ticker = new Ticker("AAPL", new Date(System.currentTimeMillis() + 10000000));
         MvcResult result = this.mockMvc
                 .perform(
-                        get(STOCKY_PATH)
+                        post(STOCKY_PATH)
                                 .content(TestUtil.asJsonString(ticker))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .header(HttpHeaders.AUTHORIZATION, TestUtil.getAuthorizationHeader(USER)))
@@ -63,7 +63,7 @@ public class StockTickerResourceTest {
         Ticker ticker = new Ticker(UUID.randomUUID().toString(), new Date(System.currentTimeMillis() + 10000000));
         this.mockMvc
                 .perform(
-                        get(STOCKY_PATH)
+                        post(STOCKY_PATH)
                                 .content(TestUtil.asJsonString(ticker))
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .header(HttpHeaders.AUTHORIZATION, TestUtil.getAuthorizationHeader(USER)))
@@ -80,7 +80,7 @@ public class StockTickerResourceTest {
         for (Ticker ticker : badTickerList) {
             this.mockMvc
                     .perform(
-                            get(STOCKY_PATH)
+                            post(STOCKY_PATH)
                                     .content(TestUtil.asJsonString(ticker))
                                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                                     .header(HttpHeaders.AUTHORIZATION, TestUtil.getAuthorizationHeader(USER)))
@@ -89,13 +89,13 @@ public class StockTickerResourceTest {
         
         this.mockMvc
                     .perform(
-                            get(STOCKY_PATH)
+                            post(STOCKY_PATH)
                                     .header(HttpHeaders.AUTHORIZATION, TestUtil.getAuthorizationHeader(USER)))
                     .andExpect(status().isBadRequest());
         
         this.mockMvc
                     .perform(
-                            get(STOCKY_PATH)
+                            post(STOCKY_PATH)
                                     .content("")
                                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                                     .header(HttpHeaders.AUTHORIZATION, TestUtil.getAuthorizationHeader(USER)))

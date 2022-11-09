@@ -41,10 +41,10 @@ public class UserResource {
     @GetMapping(path = "/subscription")
     public ResponseEntity<String> getUserSubscriptionPlan(
             @RequestHeader(name = HttpHeaders.AUTHORIZATION) String autorizationHeader) {
-        final String apiKey = StockyUtils.getApiKey(autorizationHeader);
-        User user = userManagementService.get(apiKey);
-        return ResponseEntity.ok(subscriptionManager.get(user.getSubscriptionId()).getName());
-    }
+            final String apiKey = StockyUtils.getApiKey(autorizationHeader);
+            User user = userManagementService.get(apiKey);
+            return ResponseEntity.ok(subscriptionManager.get(user.getSubscriptionId()).getName());
+        }
 
     @PostMapping()
     public ResponseEntity<String> createUser(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String autorizationHeader,

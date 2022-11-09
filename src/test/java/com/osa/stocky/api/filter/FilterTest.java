@@ -86,7 +86,7 @@ public class FilterTest {
     
     private MvcResult makeGetStockCall(User user, Ticker ticker) throws Exception {
         String userApiKey = StockyUtils.getApiKey(user.getName(), user.getPassword());
-        return mockMvc.perform(get("/stock")
+        return mockMvc.perform(post("/stock")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.asJsonString(ticker))
                 .header(HttpHeaders.AUTHORIZATION, "Basic " + userApiKey)
@@ -154,7 +154,7 @@ public class FilterTest {
         user.setSubscriptionId(plan.getId());
         userManagement.createUser(user);
         String userApiKey = StockyUtils.getApiKey(user.getName(), user.getPassword());
-        MvcResult result = mockMvc.perform(get("/stock")
+        MvcResult result = mockMvc.perform(post("/stock")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("")
                 .header(HttpHeaders.AUTHORIZATION, "Basic " + userApiKey)
@@ -169,7 +169,7 @@ public class FilterTest {
         user.setSubscriptionId(plan.getId());
         userManagement.createUser(user);
         String userApiKey = StockyUtils.getApiKey(user.getName(), user.getPassword());
-        MvcResult result = mockMvc.perform(get("/stock")
+        MvcResult result = mockMvc.perform(post("/stock")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Basic " + userApiKey)
         ).andReturn();
@@ -183,7 +183,7 @@ public class FilterTest {
         user.setSubscriptionId(plan.getId());
         userManagement.createUser(user);
         String userApiKey = StockyUtils.getApiKey(user.getName(), user.getPassword());
-        MvcResult result = mockMvc.perform(get("/stock")
+        MvcResult result = mockMvc.perform(post("/stock")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("scdsdcscdscd")
                 .header(HttpHeaders.AUTHORIZATION, "Basic " + userApiKey)
@@ -211,7 +211,7 @@ public class FilterTest {
         user.setSubscriptionId(plan.getId());
         userManagement.createUser(user);
         String userApiKey = StockyUtils.getApiKey(user.getName(), user.getPassword());
-        MvcResult result = mockMvc.perform(get("/stock")
+        MvcResult result = mockMvc.perform(post("/stock")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtil.asJsonString(ticker))
                 .header(HttpHeaders.AUTHORIZATION, "Basic " + userApiKey)
