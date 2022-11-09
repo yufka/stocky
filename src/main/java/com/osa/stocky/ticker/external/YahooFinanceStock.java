@@ -10,8 +10,10 @@ import yahoofinance.YahooFinance;
 
 /**
  * Implementation of service that uses Yahoo Finance API to get stock ticker prices using a third-party client.
+ * <br>
+ * In case of manual implementation:
  * Client calls : "https://query1.finance.yahoo.com/v7/finance/quote?symbols=<ticker_name>";
- * according to result it can be done via a simple client with price extraction from returned JSON.
+ * according to result JSON it can be done via a simple client with price extraction from returned JSON.
  * 
  * @author oleksii
  * @since 6 Nov 2022

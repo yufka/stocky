@@ -13,7 +13,10 @@ import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * Ehcache service provides methods to cache user API-keys (encoded <name:password>) for fast user search by API key
+ * to avoid extra calls to DB and also cache {@link SubscriptionPlan}. In case of user API-key caching, a lifetime 
+ * of 10 minutes is set to provide "soft" user deletion option from DB (if needed).
+ * 
  * @author oleksii
  * @since 5 Nov 2022
  */

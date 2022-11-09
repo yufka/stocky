@@ -8,6 +8,7 @@ import com.osa.stocky.user.CachedUserManagementService;
 import com.osa.stocky.user.User;
 import com.osa.stocky.util.StockyUtils;
 import com.osa.stocky.util.TestUtil;
+import java.util.Date;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
@@ -147,7 +148,7 @@ public class FilterTest {
     }
     
     @Test
-    public void QuotaNoTickerTest() throws Exception {
+    public void QuotaEmptyTickerTest() throws Exception {
         User user = TestUtil.createUser(UUID.randomUUID().toString(), UUID.randomUUID().toString(), false);
         SubscriptionPlan plan = subscriptionManger.get("DEMO");
         user.setSubscriptionId(plan.getId());
@@ -185,6 +186,34 @@ public class FilterTest {
         MvcResult result = mockMvc.perform(get("/stock")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("scdsdcscdscd")
+                .header(HttpHeaders.AUTHORIZATION, "Basic " + userApiKey)
+        ).andReturn();
+        assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
+    }
+    
+    @Test
+    public void testInvalidTicker() throws Exception {
+        Ticker ticker = TestUtil.getTicker();
+        ticker.setName(null);
+        testTicker(ticker);
+        
+        ticker.setName("");
+        testTicker(ticker);
+        
+        ticker.setName(UUID.randomUUID().toString());
+        ticker.setFrame(new Date(System.currentTimeMillis() - 100000));
+        testTicker(ticker);
+    }
+    
+    public void testTicker(Ticker ticker) throws Exception {
+        User user = TestUtil.createUser(UUID.randomUUID().toString(), UUID.randomUUID().toString(), false);
+        SubscriptionPlan plan = subscriptionManger.get("DEMO");
+        user.setSubscriptionId(plan.getId());
+        userManagement.createUser(user);
+        String userApiKey = StockyUtils.getApiKey(user.getName(), user.getPassword());
+        MvcResult result = mockMvc.perform(get("/stock")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.asJsonString(ticker))
                 .header(HttpHeaders.AUTHORIZATION, "Basic " + userApiKey)
         ).andReturn();
         assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());

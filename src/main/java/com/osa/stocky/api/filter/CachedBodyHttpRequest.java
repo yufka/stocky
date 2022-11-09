@@ -10,7 +10,12 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import org.springframework.util.StreamUtils;
 
 /**
- *
+ * Since I have to read request Body in {@link QuotaFilter} to check if request is going to "stock" resource,
+ * I need to access ether the Reader or the InputStream of request, which is more-or-less a one-time operation, 
+ * so I need to "cache" it. This wrapper basically makes my call to input stream of request possible.
+ * 
+ * Class connected with {@link CachedBodyInputStream}
+ * 
  * @author oleksii
  * @since 7 Nov 2022
  */

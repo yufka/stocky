@@ -5,7 +5,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- *
+ * Ticker object that should be passed to {@link StockResource#getStockTickerPrediction(com.osa.stocky.api.Ticker)}
+ * as request body.
+ * 
  * @author oleksii
  * @since Nov 4, 2022
  */

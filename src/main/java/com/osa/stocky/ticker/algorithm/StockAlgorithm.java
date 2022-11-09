@@ -1,5 +1,6 @@
 package com.osa.stocky.ticker.algorithm;
 
+import java.security.SecureRandom;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,10 +11,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class StockAlgorithm implements StockAlgorithmService {
+    
+    private static final double MAX = 100.0;
 
+    final SecureRandom random = new SecureRandom();
+    
     @Override
     public double getPrediction(long timePoint) {
-        return Math.random() * 200.0 - 100.0;
+        return random.nextDouble(MAX * 2) - MAX; // scale to [-100;100]
     }
 
 }

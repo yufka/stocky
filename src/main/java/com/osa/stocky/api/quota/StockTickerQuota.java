@@ -6,7 +6,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * A naive implementation of "Cache" for Stock tickers per API-key that would allow us to track the number of
+ * unique stock tickers that user request.
+ * 
+ * Strategy used here is pretty inefficient, since on every call to the {@link StockResource} the hashmap is cleaned of
+ * old expired entries that are expired {@link #clearOldEntries(java.util.Map, long) }.
+ * 
+ * I was thinking to implement this using Ehcache, thus have faced a similar problem there.
+ * 
  * @author oleksii
  * @since Nov 4, 2022
  */

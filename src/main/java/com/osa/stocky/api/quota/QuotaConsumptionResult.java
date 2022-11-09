@@ -1,7 +1,10 @@
 package com.osa.stocky.api.quota;
 
 /**
- *
+ * Result object returned by {@link StockTickerQuotaService#resolve(java.lang.String, java.lang.String, com.osa.stocky.subscription.SubscriptionPlan)}
+ * Contains information if request to resource was consumed successfully (call was valid) and returns number of 
+ * remaining resources that are available at this time.
+ * 
  * @author oleksii
  * @since 8 Nov 2022
  */

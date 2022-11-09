@@ -24,6 +24,7 @@ public class StockyUtilsTest {
         assertNull(StockyUtils.getApiKey(""));
         assertNull(StockyUtils.getApiKey(" YWxleDpwYXNz"));
         assertNull(StockyUtils.getApiKey("Basic "));
+        assertNull(StockyUtils.getApiKey("  scd"));
         assertNotNull(StockyUtils.getApiKey("Basic 2"));
         assertEquals("2", StockyUtils.getApiKey("Basic 2"));
         
@@ -33,5 +34,7 @@ public class StockyUtilsTest {
         assertNull(StockyUtils.getUserCredentials(Base64.getEncoder().encodeToString(("name:").getBytes())));
         assertNull(StockyUtils.getUserCredentials(Base64.getEncoder().encodeToString((":").getBytes())));
         assertNull(StockyUtils.getUserCredentials(Base64.getEncoder().encodeToString(("sdkcjnscd").getBytes())));
+        
+        assertNull(StockyUtils.getUserCredentials(Base64.getEncoder().encodeToString(("::::").getBytes())));
     }
 }

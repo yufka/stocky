@@ -21,7 +21,7 @@ import javax.persistence.Table;
         resultClass = User.class)
 
 @NamedNativeQuery(name = "update_subscription_by_api_key",
-        query = "UPDATE {h-schema}api_user SET subscription_id = :subid WHERE name=:name AND password=:password") 
+        query = "UPDATE {h-schema}api_user SET subscription_id = :subid, updated_plan=:updatedPlan WHERE name=:name AND password=:password") 
 @Entity
 @Table(name = "api_user")
 public class User implements Serializable {
@@ -49,7 +49,7 @@ public class User implements Serializable {
     @Column(name = "updated", nullable = false, columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Timestamp updated;
     
-    @Column(name = "updated_plan", nullable = false, columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "updated_plan", columnDefinition = "TIMESTAMP")
     private Timestamp updatedPlan;
 
     public int getId() {

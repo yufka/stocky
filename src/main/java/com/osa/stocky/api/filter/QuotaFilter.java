@@ -96,9 +96,6 @@ public class QuotaFilter implements Filter {
      * @return 
      */
     private Ticker getTicker(byte[] requestBodyBytes) {
-        if (requestBodyBytes == null) {
-            return null;
-        }
         String requestBodyString = new String(requestBodyBytes);
         if (requestBodyString.isEmpty()) {
             return null;

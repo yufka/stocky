@@ -11,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
+ * Manage user. This class combines information from DB({@link UserRepository}) and puts in into Cache for 10 minutes
+ * to avoid extra calls to DB. In case if user has to be deleted manually in DB, User will be deleted from cache automatically
+ * 10 minutes.
+ * 
  * @author oleksii
  * @since 7 Nov 2022
  */
@@ -53,7 +57,8 @@ public class CachedUserManagement implements CachedUserManagementService {
             if (user == null) {
                 throw new IllegalArgumentException("User with API key not found: " + apiKey);
             }
-            userRepository.updateSubscription(credentials.getName(), credentials.getPassword(), subscriptionId);
+            userRepository.updateSubscription(credentials.getName(), credentials.getPassword(),
+                    subscriptionId, new Timestamp(System.currentTimeMillis()));
             user = userRepository.get(credentials.getName(), credentials.getPassword());
             apiCacheService.putUser(user); // update user in chache
         } catch (Exception e) {
@@ -73,7 +78,7 @@ public class CachedUserManagement implements CachedUserManagementService {
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
             user.setCreated(currentTimestamp);
             user.setUpdated(currentTimestamp);
-            user.setUpdatedPlan(currentTimestamp);
+            user.setUpdatedPlan(null);
             User savedUser = userRepository.save(user);
             apiCacheService.putUser(savedUser);
             return StockyUtils.getApiKey(savedUser.getName(), savedUser.getPassword());

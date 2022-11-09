@@ -1,5 +1,6 @@
 package com.osa.stocky.user;
 
+import java.sql.Timestamp;
 import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -26,5 +27,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     public void updateSubscription(
             @Param(value = "name") String apikey, 
             @Param(value = "password") String password,
-            @Param(value = "subid") int subscriptionId);
+            @Param(value = "subid") int subscriptionId,
+            @Param(value = "updatedPlan") Timestamp updatedPlan);
 }

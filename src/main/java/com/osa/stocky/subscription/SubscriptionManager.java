@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * This class manages {@link SubscriptionPlan} object using DB({@link SubscriptionPlanRepository}) 
+ * and Cache to avoid extra calls to DB. Since Subscription Plans do not change (assumption), they stay in Cache forever.
  * @author oleksii
  * @since 6 Nov 2022
  */

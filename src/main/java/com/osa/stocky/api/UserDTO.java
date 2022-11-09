@@ -3,7 +3,8 @@ package com.osa.stocky.api;
 import java.io.Serializable;
 
 /**
- * User DTO object.
+ * User DTO object used in request body for user creation.
+ * {@link UserResource#createUser(java.lang.String, com.osa.stocky.api.UserDTO)}
  * 
  * @author oleksii
  * @since 7 Nov 2022

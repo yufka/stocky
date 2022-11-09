@@ -7,7 +7,7 @@ import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 
 /**
- *
+ * See here : {@link CachedBodyHttpRequest}
  * @author oleksii
  * @since 7 Nov 2022
  */

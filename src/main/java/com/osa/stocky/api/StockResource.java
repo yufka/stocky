@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
+ * Resource with a method to get prediction for some stock ticker at some point of time.
+ * 
  * @author oleksii
  * @since Nov 4, 2022
  */

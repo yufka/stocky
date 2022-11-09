@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Endpoint of user resource
+ * User resource contains methods to create users, update user subscription plan and get user subscription plan.
  *
  * @author oleksii
  * @since Nov 4, 2022
@@ -62,7 +62,11 @@ public class UserResource {
             User user = new User();
             user.setName(userDto.getName());
             user.setPassword(userDto.getPassword());
-
+            
+            if (userDto.getSubscriptionPlan() == null || userDto.getSubscriptionPlan().isEmpty()) {
+                logUnrecognizedPlan(userDto.getSubscriptionPlan());
+                return ResponseEntity.badRequest().build();
+            }
             SubscriptionPlan subscriptionPlan = subscriptionManager.get(userDto.getSubscriptionPlan());
             if (subscriptionPlan == null) {
                 logUnrecognizedPlan(userDto.getSubscriptionPlan());
@@ -115,7 +119,8 @@ public class UserResource {
                 return ResponseEntity.ok(userSubscriptionPlan.getName()); // nothing was done, thus not a problem.
             }
             
-            if (System.currentTimeMillis() - StockyUtils.MONTH_MILLIS < user.getUpdatedPlan().getTime()) {
+            if (user.getUpdatedPlan() != null
+                    && System.currentTimeMillis() - StockyUtils.MONTH_MILLIS < user.getUpdatedPlan().getTime()) {
                 LOGGER.warn("Failed to override user subscription plan, due to update time constraint");
                 return ResponseEntity.badRequest().build();
             }
